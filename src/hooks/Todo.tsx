@@ -21,11 +21,11 @@ export const useTodo = () => {
   };
 
   //edit
-  const editTodo = (id: string, title: string, completed: boolean) => {
+  const editTodo = (editedTodo: ITodo) => {
     const newTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        todo.title = title;
-        todo.completed = completed;
+      if (todo.id === editedTodo.id) {
+        todo.title = editedTodo.title;
+        todo.completed = editedTodo.completed;
       }
       return todo;
     });

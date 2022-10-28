@@ -3,10 +3,16 @@ import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useTodo } from "../../hooks/Todo";
 import { ITodo } from "../../types";
 
-const TodoItem = ({ todo }: { todo: ITodo }) => {
+const TodoItem = ({
+  todo,
+  editClicked,
+}: {
+  todo: ITodo;
+  editClicked(todo: ITodo): void;
+}) => {
   const { editTodo, deleteTodo } = useTodo();
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    editTodo(todo.id, todo.title, e.target.checked);
+    editTodo({ ...todo, completed: e.target.checked });
   };
   const handleDelete = () => {
     deleteTodo(todo.id);
@@ -19,13 +25,14 @@ const TodoItem = ({ todo }: { todo: ITodo }) => {
             isChecked={todo.completed}
             onChange={(e) => handleCheckboxChange(e)}
           />
-          <Text as={todo.completed? 's': 'b'}>{todo.title}</Text>
+          <Text as={todo.completed ? "s" : "b"}>{todo.title}</Text>
         </HStack>
         <HStack spacing={2}>
           <IconButton
             colorScheme="yellow"
             aria-label="Edit"
             icon={<EditIcon />}
+            onClick={() => editClicked(todo)}
           />
           <IconButton
             colorScheme="red"

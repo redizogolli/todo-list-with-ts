@@ -26,9 +26,10 @@ interface ModalProps {
   onSave: (data: ITodo) => void;
 }
 
-const Popup = ({ todo, title, isOpen, onClose, onSave }: ModalProps) => {
+const Popup = ({ todo, title, isOpen, type, onClose, onSave }: ModalProps) => {
   const [data, setData] = useState(todo);
-  const isError = todo.title === "";
+
+  const isError = data.title === "";
 
   const handleSave = () => {
     onSave(data);
@@ -60,15 +61,17 @@ const Popup = ({ todo, title, isOpen, onClose, onSave }: ModalProps) => {
                 <FormErrorMessage>Title is required.</FormErrorMessage>
               )}
             </FormControl>
-            <FormControl>
-              <FormLabel>Completed</FormLabel>
-              <Checkbox
-                isChecked={data.completed}
-                onChange={(e: any) =>
-                  setData({ ...data, completed: e.target.checked })
-                }
-              />
-            </FormControl>
+            {type === TodoActionType.Edit_TODO && (
+              <FormControl>
+                <FormLabel>Completed</FormLabel>
+                <Checkbox
+                  isChecked={data.completed}
+                  onChange={(e: any) =>
+                    setData({ ...data, completed: e.target.checked })
+                  }
+                />
+              </FormControl>
+            )}
           </Box>
         </ModalBody>
 

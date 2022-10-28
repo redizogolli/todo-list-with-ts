@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   VStack,
@@ -14,13 +14,21 @@ import Popup from "../modal";
 import { ITodo, TodoActionType } from "../../types";
 
 const TodoList = () => {
-  const { todos, addTodo } = useTodo();
+  const [type, setType] = useState<TodoActionType>(TodoActionType.None);
+  const { todos, addTodo, editTodo } = useTodo();
   const [isOpen, setIsOpen] = useState(false);
-  const bgColor = useColorModeValue("gray.100", "gray.700");
-  const todo: ITodo = {
+
+  const [todo, setTodo] = useState<ITodo>({
     id: "",
     title: "",
     completed: false,
+  });
+
+  const bgColor = useColorModeValue("gray.100", "gray.700");
+  const handleEditClicked = (todo: ITodo) => {
+    setType(TodoActionType.Edit_TODO);
+    setTodo(todo);
+    setIsOpen(true);
   };
   return (
     <Box
@@ -32,30 +40,47 @@ const TodoList = () => {
       minW="500px"
       background={bgColor}
     >
-      <Popup
-        todo={todo}
-        type={TodoActionType.ADD_TODO}
-        title="Add Todo"
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onSave={(data: ITodo) => {
-          addTodo(data.title);
-          setIsOpen(false);
-        }}
-      />
-      {/* Call popup */}
+      {isOpen && (
+        <Popup
+          todo={todo}
+          type={type}
+          title={type === TodoActionType.ADD_TODO ? "Add Todo" : "Edit Todo"}
+          isOpen={isOpen}
+          onClose={() => {
+            setType(TodoActionType.None);
+            setIsOpen(false);
+          }}
+          onSave={(data: ITodo) => {
+            if (type === TodoActionType.ADD_TODO) {
+              addTodo(data.title);
+            } else {
+              editTodo(data);
+            }
+            setType(TodoActionType.None);
+            setIsOpen(false);
+          }}
+        />
+      )}
       <HStack h="full" w="full" justifyContent={"space-between"} px={4} py={2}>
         <Heading>Todo List</Heading>
         <IconButton
           colorScheme={"green"}
           aria-label="add"
           icon={<AddIcon />}
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setType(TodoActionType.ADD_TODO);
+            setTodo({
+              id: "",
+              title: "",
+              completed: false,
+            });
+            setIsOpen(true);
+          }}
         ></IconButton>
       </HStack>
       <VStack w="full" h="full">
         {todos.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} />
+          <TodoItem key={todo.id} todo={todo} editClicked={handleEditClicked} />
         ))}
       </VStack>
     </Box>
