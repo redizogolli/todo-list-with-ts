@@ -19,7 +19,7 @@ const TodoItem = ({ todo }: { todo: ITodo }) => {
             isChecked={todo.completed}
             onChange={(e) => handleCheckboxChange(e)}
           />
-          <Text>{todo.title}</Text>
+          <Text as={todo.completed? 's': 'b'}>{todo.title}</Text>
         </HStack>
         <HStack spacing={2}>
           <IconButton

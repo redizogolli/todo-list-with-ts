@@ -32,11 +32,15 @@ const Popup = ({ todo, title, isOpen, onClose, onSave }: ModalProps) => {
 
   const handleSave = () => {
     onSave(data);
+  };
+
+  const handleClose = () => {
     setData(todo);
+    onClose();
   };
 
   return (
-    <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+    <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
@@ -56,7 +60,7 @@ const Popup = ({ todo, title, isOpen, onClose, onSave }: ModalProps) => {
                 <FormErrorMessage>Title is required.</FormErrorMessage>
               )}
             </FormControl>
-            <FormControl isInvalid={isError}>
+            <FormControl>
               <FormLabel>Completed</FormLabel>
               <Checkbox
                 isChecked={data.completed}
@@ -69,7 +73,7 @@ const Popup = ({ todo, title, isOpen, onClose, onSave }: ModalProps) => {
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
+          <Button colorScheme="blue" mr={3} onClick={handleClose}>
             Close
           </Button>
           <Button colorScheme="green" onClick={handleSave}>
